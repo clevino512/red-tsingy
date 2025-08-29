@@ -28,6 +28,7 @@ function Logout() {
           console.log("Déconnexion:", response.data);
             if(response){
               localStorage.removeItem("token");
+              console.log(token)
               navigate("/login");
             }
         } else {

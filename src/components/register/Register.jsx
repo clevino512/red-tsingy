@@ -16,7 +16,7 @@ import {
   faIdCard, // ✅ import ajouté
 } from "@fortawesome/free-solid-svg-icons";
 
-import logo from "../../assets/UNA.jpg";
+import logoTsingy from "../../assets/logoTsingy.jpg";
 
 function Register() {
   const [name, setName] = useState("");
@@ -41,7 +41,7 @@ function Register() {
 
     try {
       NProgress.start();
-      const response = await axios.post(`${API_BASE_URL}/register`, {
+      const response = await axios.post(`${API_BASE_URL}register`, {
         name,
         email,
         phone,
@@ -69,9 +69,9 @@ function Register() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        {/* Logo */}
+
         <div className="flex justify-center mb-6">
-          <img src={logo} alt="Logo" className="h-16 w-16 object-contain" />
+          <img src={logoTsingy} alt="Logo" className="h-16 w-16 object-contain" />
         </div>
 
         {/* Titre */}

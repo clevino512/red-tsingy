@@ -2,6 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './Layout';
+import {Navigate } from "react-router-dom";
+
 
 import "./index.css";
 import App from "./App.jsx";
@@ -22,6 +24,7 @@ import Tickets from "./components/users/pages/Tickets.jsx";
 import Parkings from "./components/users/pages/Parkings.jsx";
 import Hebergements from "./components/users/pages/Hebergements.jsx";
 import Plats from "./components/users/pages/Plats.jsx";
+import Accueil from "./components/users/Accueil.jsx";
 
 //offres 
 import ValiderCommandes from "./components/users/offres/ValiderCommandes.jsx";
@@ -31,11 +34,13 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/app" element={<App />} />
+
         
 
 
@@ -56,7 +61,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/valider-commandes" element={<ValiderCommandes />} />
         </Route>
         <Route element={<Layout />}>
-            <Route path="/accueil" element={<AdminAccueil />} /> 
+            <Route path="/Admin-accueil" element={<AdminAccueil />} /> 
+            <Route path="/Client-accueil" element={<Accueil />} /> 
+
         </Route>
 
       </Routes>

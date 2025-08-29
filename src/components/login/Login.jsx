@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../api/config";
@@ -26,24 +25,19 @@ function Login() {
     document.title = "Connexion";
   }, []);
 
-  // Animation typing en boucle avec pause de 2s
   useEffect(() => {
     let timeout;
-
     if (i < titre.length) {
-      // Ajouter la lettre suivante
       timeout = setTimeout(() => {
         setText((prev) => prev + titre[i]);
         setI(i + 1);
       }, 150);
     } else {
-      // Pause de 2 secondes puis recommencer
       timeout = setTimeout(() => {
         setText("");
         setI(0);
       }, 2000);
     }
-
     return () => clearTimeout(timeout);
   }, [i, titre]);
 
@@ -59,11 +53,33 @@ function Login() {
         { email, password },
         { withCredentials: true }
       );
+
       console.log("Connexion réussie:", response.data);
 
-      if (response.data.access_token) {
-        localStorage.setItem("token", response.data.access_token);
-        navigate("/app");
+      const { access_token, roles } = response.data;
+      const role = roles?.[0]?.toLowerCase(); // récupérer le premier rôle en minuscule
+
+      if (access_token && role) {
+        // Stocker token et rôle
+        localStorage.setItem("token", access_token);
+        localStorage.setItem("role", role);
+
+        console.log("Rôle:", role); // debug
+
+        // Redirection selon rôle
+        switch (role) {
+          case "admin":
+            navigate("/Admin-accueil");
+            break;
+          case "receptioniste":
+          case "client":
+            navigate("/Client-accueil");
+            break;
+          default:
+            navigate("/register"); // fallback
+        }
+      } else {
+        setError("Impossible de déterminer le rôle de l'utilisateur.");
       }
     } catch (err) {
       console.error("Erreur de connexion:", err);
@@ -82,14 +98,10 @@ function Login() {
           alt="Logo Tsingy"
           className="h-24 mx-auto mb-4 rounded shadow-lg"
         />
-
-        {/* Animation titre */}
         <h1 className="text-4xl md:text-8xl font-bold text-red-600">
           {text}
           <span className="animate-pulse">|</span>
         </h1>
-
-        {/* Texte descriptif touristique */}
         <p className="text-gray-700 mt-2 text-lg max-w-xl mx-auto">
           Découvrez la majesté des <strong>Tsingy rouges</strong>, une merveille naturelle
           unique au monde. Entre falaises sculptées et paysages spectaculaires,
@@ -127,7 +139,6 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* 🔑 Lien mot de passe oublié */}
           <div className="text-right">
             <button
               type="button"

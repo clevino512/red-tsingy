@@ -14,7 +14,7 @@ function App() {
       <Navbar />
       
       <main className="flex-grow">
-        <AdminAccueil/>
+         <AdminAccueil/>
          <UserAccueil/>
          <Receptionist/>
         {/* Ton contenu principal ici */}
