@@ -7,16 +7,14 @@ import "nprogress/nprogress.css";
 
 export default function Commande() {
   const [formData, setFormData] = useState({
-    ticketType: "",
-    ticketCount: 1,
-    adultes: 0,
-    enfants: 0,
-    etrangers: 0,
-    nonEtrangers: 0,
+    number_resident_adulte: "",
+    number_non_resident_adulte: "",
+    number_resident_enfant:"",
+    number_non_resident_enfant:"",
     vehicule: "",
     vehiculeCount: 0,
     hebergement: "",
-    hebergementCount: 1,
+    number_sejour: 1,
     dateEntree: "",
     dateExpiration: "",
     prixTotal: 0,
@@ -32,12 +30,13 @@ useEffect(() => {
 
       try {
         NProgress.start(); // start progress bar
-        const response = await axios.get(`${API_BASE_URL}/price-tickets`, {
+        const response = await axios.get(`${API_BASE_URL}/commande-tickets`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
         });
+        
         setTest(response.data); // on stocke les données dans le state
         console.log("Prix tickets récupérés:", response.data);
       } catch (err) {

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {API_BASE_URL} from '../../api/config.js'
+
 import {
   faUser,
   faEnvelope,
@@ -10,41 +12,70 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Profile({ userId = 1 }) {
+export default function Profile() {
   const [user, setUser] = useState({
+    id: null,
     name: "",
     email: "",
     phone: "",
     password: "",
     idCard: "",
     username: "",
+    password_confirmation: "",
   });
+
+  const [loading, setLoading] = useState(true);
+
+
+  // ⚡ Récupérer le token depuis localStorage
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/user`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // 🔑 ajout du token
+          },
+        });
         setUser(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Erreur lors du chargement de l'utilisateur :", error);
+        setLoading(false);
       }
     };
     fetchUser();
-  }, [userId]);
+  }, [token]);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  // recoit des donées
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${API_BASE_URL}/api/users/${userId}`, user);
-      alert("Profil mis à jour !");
+      await axios.put(`${API_BASE_URL}/user-update/${user.id}`, user, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("✅ Profil mis à jour avec succès !");
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
+      console.log(user);
+      alert("❌ Une erreur est survenue lors de la mise à jour.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-gray-600">Chargement...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
@@ -56,7 +87,10 @@ export default function Profile({ userId = 1 }) {
           Vous pouvez modifier vos informations ci-dessous :
         </p>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           {/* Nom */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
@@ -66,7 +100,7 @@ export default function Profile({ userId = 1 }) {
             <input
               type="text"
               name="name"
-              value={user.name}
+              value={user.name || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -81,7 +115,7 @@ export default function Profile({ userId = 1 }) {
             <input
               type="text"
               name="username"
-              value={user.username}
+              value={user.username || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -96,7 +130,7 @@ export default function Profile({ userId = 1 }) {
             <input
               type="email"
               name="email"
-              value={user.email}
+              value={user.email || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -111,14 +145,14 @@ export default function Profile({ userId = 1 }) {
             <input
               type="text"
               name="phone"
-              value={user.phone}
+              value={user.phone || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Mot de passe */}
-          <div>
+            <div>
             <label className="block text-gray-700 font-medium mb-1">
               <FontAwesomeIcon icon={faLock} className="mr-2" />
               Mot de passe
@@ -126,22 +160,36 @@ export default function Profile({ userId = 1 }) {
             <input
               type="password"
               name="password"
-              value={user.password}
+              value={user.password || ""}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              <FontAwesomeIcon icon={faLock} className="mr-2" />
+              Mot de passe
+            </label>
+            <input
+              type="password"
+              name="password_confirmation"
+              value={user.password_confirmation || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* ID Carte */}
+          </div>
+
+          {/* Nationalité */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
               <FontAwesomeIcon icon={faIdCard} className="mr-2" />
-              ID Carte
+              Nationalité
             </label>
             <input
               type="text"
-              name="idCard"
-              value={user.idCard}
+              name="nationality"
+              value={user.nationality || ""}
               onChange={handleChange}
               className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

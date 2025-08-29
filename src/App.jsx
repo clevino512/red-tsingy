@@ -15,6 +15,8 @@ function App() {
       
       <main className="flex-grow">
         <AdminAccueil/>
+         <UserAccueil/>
+         <Receptionist/>
         {/* Ton contenu principal ici */}
       </main>
       
