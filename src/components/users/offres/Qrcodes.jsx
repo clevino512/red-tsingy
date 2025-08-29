@@ -8,13 +8,35 @@ export default function QrVerification() {
   const [uploadResult, setUploadResult] = useState(null);
   const [message, setMessage] = useState("");
 
-  // Scanner QR code avec la caméra
+  // Confirmer le ticket du client dans la base
+  const confirmTicket = async (data) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/verify`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Accept: "application/json",
+        },
+      });
+      setMessage(response.data.message);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Erreur lors de la vérification du ticket");
+      return null;
+    }
+  };
+
+  // Scanner QR code avec la caméra et envoyer directement à la base
   const startScan = () => {
     const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
     scanner.render(
-      (decodedText) => {
-        setScanResult(decodedText);
+      async (decodedText) => {
         scanner.clear();
+        setScanResult(decodedText);
+        const result = await confirmTicket({ qrData: decodedText });
+        if (result) {
+          setScanResult(result); // Affiche les données retournées par la base
+        }
       },
       (error) => {
         console.warn("QR scan error", error);
@@ -39,25 +61,15 @@ export default function QrVerification() {
         },
       });
       setUploadResult(response.data);
+
+      // Vérifier directement le ticket uploadé
+      const verified = await confirmTicket(response.data);
+      if (verified) {
+        setUploadResult(verified);
+      }
     } catch (err) {
       console.error(err);
       setMessage("❌ Impossible de décoder le QR code");
-    }
-  };
-
-  // Confirmer le ticket du client
-  const confirmTicket = async (data) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/verify-ticket`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application/json",
-        },
-      });
-      setMessage(response.data.message);
-    } catch (err) {
-      console.error(err);
-      setMessage("❌ Erreur lors de la confirmation");
     }
   };
 
@@ -68,20 +80,14 @@ export default function QrVerification() {
       {Object.entries(data).map(([key, value]) => (
         <p key={key} className="flex justify-between border-b py-1">
           <span className="font-medium">{key}</span>
-          <span>{value.toString()}</span>
+          <span>{value?.toString()}</span>
         </p>
       ))}
-      <button
-        onClick={() => confirmTicket(data)}
-        className="mt-4 w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-      >
-        Vérifier le QR code
-      </button>
     </div>
   );
 
   return (
-    <div className=" mt-25 p-6 max-w-3xl mx-auto bg-red-400 ">
+    <div className="mt-8 p-6 max-w-3xl mx-auto bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">Vérification des Tickets</h1>
 
       {/* Scanner QR */}
@@ -94,7 +100,7 @@ export default function QrVerification() {
           Démarrer le scanner
         </button>
         <div id="reader" className="mt-4"></div>
-        {scanResult && renderReceipt({ QR_Data: scanResult })}
+        {scanResult && renderReceipt(scanResult)}
       </div>
 
       {/* Upload QR */}
