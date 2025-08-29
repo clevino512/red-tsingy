@@ -3,7 +3,9 @@ import React from 'react'
 import { useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode"; // librairie pour scanner QR
 import axios from "axios";
-import { API_BASE_URL } from "../../api/config";
+import { API_BASE_URL } from "../../../api/config";
+
+
 
 function QrVerification() {
   const [scanResult, setScanResult] = useState(null);
