@@ -25,6 +25,7 @@ import Parkings from "./components/users/pages/Parkings.jsx";
 import Hebergements from "./components/users/pages/Hebergements.jsx";
 import Plats from "./components/users/pages/Plats.jsx";
 import Accueil from "./components/users/Accueil.jsx";
+import QrVerification from "./components/users/offres/Qrcodes.jsx";
 
 //offres 
 import ValiderCommandes from "./components/users/offres/ValiderCommandes.jsx";
@@ -53,6 +54,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/manage" element={<Manage />} />
           <Route path="/historiques" element={<Historiques />} />
           <Route path="/param" element={< Profile />} />
+          <Route path="/ QrCode" element={<  QrVerification />} />
+
         </Route>
 
 

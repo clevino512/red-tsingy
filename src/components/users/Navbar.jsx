@@ -7,6 +7,13 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 function Navbar() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [role, setRole] = useState("");
+
+  // Récupérer le rôle au montage
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    setRole(storedRole ? storedRole.toLowerCase() : "");
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,35 +44,63 @@ function Navbar() {
       {/* Menu + Déconnexion */}
       <div className="flex items-center space-x-20 pr-12">
         <ul className="flex space-x-6 text-xl font-semibold text-white">
+          {/* Tous les rôles ont Accueil */}
           <li
-            onClick={() => navigate("/Admin-accueil")}
+            onClick={() => navigate("/Accueil")}
             className="cursor-pointer hover:underline"
           >
             Accueil
           </li>
-          <li className="cursor-pointer hover:underline">Services</li>
 
-          {/* 🔥 Menu Gestion au hover */}
-          <li className="relative group cursor-pointer">
-            <span>Gestion</span>
-            <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-              <button
-                onClick={() => navigate("/manage")}
-                className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
-              >
-                Utilisateurs
-              </button>
-              <button
-                onClick={() => navigate("/historiques")}
-                className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
-              >
-                Historiques
-              </button>
-            </div>
-          </li>
+          {/* Gestion pour admin */}
+            {(role === "admin" || role === "receptioniste") && (
+              <li className="relative group cursor-pointer">
+                <span>Gestion</span>
+                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                  <button
+                    onClick={() => navigate("/manage")}
+                    className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
+                  >
+                    Ajouter Service
+                  </button>
+                  <button
+                    onClick={() => navigate("/historiques")}
+                    className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
+                  >
+                    Historiques
+                  </button>
+                </div>
+              </li>
+            )}
+
+
+          {/* Gestion pour receptioniste */}
+          {role === "receptioniste" && (
+           <li className="relative group cursor-pointer">
+              <span>Gestion</span>
+              <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                <button
+                  onClick={() => navigate("/QrCode")}
+                  className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
+                >
+                  Enregistrer Clients
+                </button>
+              </div>
+            </li>
+          )}
+
+          {/* Historique pour client */}
+          {role === "client" && (
+            <li
+              onClick={() => navigate("/historiques")}
+              className="cursor-pointer hover:underline"
+            >
+              Historiques
+            </li>
+          )}
         </ul>
 
-        {/* 🔥 Menu User au hover */}
+        {/* Menu User au hover */}
         <div className="relative group cursor-pointer hover:scale-110 transition-transform duration-200">
           <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-red-500 hover:bg-red-200 transition">
             <FontAwesomeIcon icon={faUser} className="text-xl" />
@@ -81,7 +116,8 @@ function Navbar() {
             <button
               onClick={() => {
                 localStorage.removeItem("token");
-                navigate("/");
+                localStorage.removeItem("role");
+                navigate("/login");
               }}
               className="block w-full text-center px-4 py-2 hover:bg-red-100 whitespace-nowrap"
             >
