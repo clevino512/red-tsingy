@@ -87,7 +87,7 @@ export default function QrVerification() {
   );
 
   return (
-    <div className="mt-8 p-6 max-w-3xl mx-auto bg-gray-50 min-h-screen">
+    <div className="mt-25 p-6 max-w-3xl mx-auto bg-gray-50 min-h-vh">
       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">Vérification des Tickets</h1>
 
       {/* Scanner QR */}
