@@ -1,0 +1,70 @@
+[
+  {
+    "id": 1,
+    "nom": "Rabenantenaina Clévin",
+    "commandes": [
+      { "id": 1, "produit": "Vélo électrique", "date": "2025-08-01", "prix": 1200000, "observation": "Livraison rapide", "statut": "Livrée" },
+      { "id": 2, "produit": "Casque vélo", "date": "2025-08-03", "prix": 150000, "observation": "", "statut": "En cours" }
+    ],
+    "paiements": [
+      { "id": 1, "montant": 1200000, "date": "2025-08-01", "numero_recu": "REC001", "moyen": "Carte bancaire" },
+      { "id": 2, "montant": 150000, "date": "2025-08-03", "numero_recu": "REC002", "moyen": "Mobile Money" }
+    ],
+    "notifications": [
+      { "id": 1, "message": "Votre commande Vélo électrique a été expédiée.", "date": "2025-08-01" },
+      { "id": 2, "message": "Votre paiement Mobile Money a été reçu.", "date": "2025-08-03" }
+    ]
+  },
+  {
+    "id": 2,
+    "nom": "Ranaivoson Hery",
+    "commandes": [
+      { "id": 3, "produit": "Scooter électrique", "date": "2025-08-05", "prix": 2500000, "observation": "", "statut": "Livrée" }
+    ],
+    "paiements": [
+      { "id": 3, "montant": 2500000, "date": "2025-08-05", "numero_recu": "REC003", "moyen": "Carte bancaire" }
+    ],
+    "notifications": [
+      { "id": 3, "message": "Votre commande Scooter électrique a été livrée.", "date": "2025-08-05" }
+    ]
+  },
+  {
+    "id": 3,
+    "nom": "Rakotomalala Lala",
+    "commandes": [
+      { "id": 4, "produit": "Moto", "date": "2025-08-07", "prix": 3500000, "observation": "Assurance incluse", "statut": "En attente" }
+    ],
+    "paiements": [
+      { "id": 4, "montant": 3500000, "date": "2025-08-07", "numero_recu": "REC004", "moyen": "Virement bancaire" }
+    ],
+    "notifications": [
+      { "id": 4, "message": "Paiement reçu pour votre Moto.", "date": "2025-08-07" }
+    ]
+  },
+  {
+    "id": 4,
+    "nom": "Andriamampianina Faly",
+    "commandes": [
+      { "id": 5, "produit": "Helicoptère", "date": "2025-08-09", "prix": 12000000, "observation": "Livraison sous 1 mois", "statut": "En cours" }
+    ],
+    "paiements": [
+      { "id": 5, "montant": 12000000, "date": "2025-08-09", "numero_recu": "REC005", "moyen": "Chèque" }
+    ],
+    "notifications": [
+      { "id": 5, "message": "Votre commande Helicoptère est en traitement.", "date": "2025-08-09" }
+    ]
+  },
+  {
+    "id": 5,
+    "nom": "Rasolonjatovo Tina",
+    "commandes": [
+      { "id": 6, "produit": "Accessoires vélo", "date": "2025-08-10", "prix": 300000, "observation": "", "statut": "Livrée" }
+    ],
+    "paiements": [
+      { "id": 6, "montant": 300000, "date": "2025-08-10", "numero_recu": "REC006", "moyen": "Mobile Money" }
+    ],
+    "notifications": [
+      { "id": 6, "message": "Votre paiement Mobile Money a été confirmé.", "date": "2025-08-10" }
+    ]
+  }
+]

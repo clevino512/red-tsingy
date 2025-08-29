@@ -45,7 +45,7 @@ export default function Tickets() {
   const v = vehicles[currentIndex];
 
   return (
-    <section className="relative w-full h-[80vh] overflow-hidden">
+    <section className="relative w-full h-[80vh] overflow-hidden mt-20">
       {/* Image de fond */}
       <img
         src={v.image}

@@ -72,8 +72,10 @@ function Login() {
             navigate("/Admin-accueil");
             break;
           case "receptioniste":
+                navigate("/Admin-accueil");
+            break;
           case "client":
-            navigate("/Client-accueil");
+            navigate("/Admin-accueil");
             break;
           default:
             navigate("/register"); // fallback

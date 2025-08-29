@@ -25,7 +25,9 @@ import Parkings from "./components/users/pages/Parkings.jsx";
 import Hebergements from "./components/users/pages/Hebergements.jsx";
 import Plats from "./components/users/pages/Plats.jsx";
 import Accueil from "./components/users/Accueil.jsx";
+import VoirCommande from "./components/users/VoirsPlus/VoirsCommandes.jsx";
 import QrVerification from "./components/users/offres/Qrcodes.jsx";
+
 
 //offres 
 import ValiderCommandes from "./components/users/offres/ValiderCommandes.jsx";
@@ -35,7 +37,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
@@ -54,7 +56,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/manage" element={<Manage />} />
           <Route path="/historiques" element={<Historiques />} />
           <Route path="/param" element={< Profile />} />
-          <Route path="/ QrCode" element={<  QrVerification />} />
+          <Route path="/QrCode" element={<  QrVerification />} />
+          <Route path="/voirCommande" element={< VoirCommande />} />
+           <Route path="/Qr-Verification" element={< QrVerification />} />
 
         </Route>
 
@@ -65,7 +69,7 @@ createRoot(document.getElementById("root")).render(
         </Route>
         <Route element={<Layout />}>
             <Route path="/Admin-accueil" element={<AdminAccueil />} /> 
-            <Route path="/Client-accueil" element={<Accueil />} /> 
+            <Route path="/Admin-accueil" element={<Accueil />} /> 
 
         </Route>
 

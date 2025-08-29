@@ -46,7 +46,7 @@ function Navbar() {
         <ul className="flex space-x-6 text-xl font-semibold text-white">
           {/* Tous les rôles ont Accueil */}
           <li
-            onClick={() => navigate("/Accueil")}
+            onClick={() => navigate("/Admin-accueil")}
             className="cursor-pointer hover:underline"
           >
             Accueil
@@ -92,11 +92,22 @@ function Navbar() {
           {/* Historique pour client */}
           {role === "client" && (
             <li
-              onClick={() => navigate("/historiques")}
+              onClick={() => navigate("/voirCommande")}
               className="cursor-pointer hover:underline"
             >
               Historiques
             </li>
+            
+          )}
+
+          {role === "client" && (
+            <li
+              onClick={() => navigate("Qr-Verification")}
+              className="cursor-pointer hover:underline"
+            >
+              Enregistre clients
+            </li>
+            
           )}
         </ul>
 
