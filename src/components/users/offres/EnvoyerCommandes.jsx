@@ -7,18 +7,19 @@ export default function ValiderCommande({ data, onClose }) {
   const handleConfirm = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`${API_BASE_URL}/commande`, data, {
+      await axios.post(`${API_BASE_URL}/commande-tickets`,{ }, 
+        {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
-
+      console.log(data)
       alert("✅ Commande validée et envoyée !");
       onClose();
     } catch (error) {
       console.error("Erreur lors de la validation :", error);
-      alert("❌ Erreur lors de la validation de la commande");
+      alert(" Erreur lors de la validation de la commande");
     }
   };
 

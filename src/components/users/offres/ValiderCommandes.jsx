@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import EnvoyerCommandes from "./EnvoyerCommandes";
-import {API_BASE_URL} from '../../../api/config'
+import { API_BASE_URL } from "../../../api/config";
 import axios from "axios";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
 export default function Commande() {
   const [formData, setFormData] = useState({
-    number_resident_adulte: "",
-    number_non_resident_adulte: "",
-    number_resident_enfant:"",
-    number_non_resident_enfant:"",
+    number_resident_adulte: 0,
+    number_non_resident_adulte: 0,
+    number_resident_enfant: 0,
+    number_non_resident_enfant: 0,
     vehicule: "",
     vehiculeCount: 0,
     hebergement: "",
@@ -21,37 +21,38 @@ export default function Commande() {
   });
 
   const [popupVisible, setPopupVisible] = useState(false);
-  const [copiedData, setCopiedData] = useState(null); // ✅ données copiées
-const [test, setTest] = useState(null); 
-useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  const [copiedData, setCopiedData] = useState(null);
+  const [test, setTest] = useState(null);
 
-      try {
-        NProgress.start(); // start progress bar
-        const response = await axios.get(`${API_BASE_URL}/commande-tickets`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-        
-        setTest(response.data); // on stocke les données dans le state
-        console.log("Prix tickets récupérés:", response.data);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des prix:", err);
-      } finally {
-        NProgress.done(); // stop progress bar
-      }
-    };
+  // // 🔹 Récupération des tarifs depuis le backend
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) return;
 
-    fetchData();
-  }, []); // ne s'exécute qu'au montage
-console.log(test)
+  //     try {
+  //       NProgress.start();
+  //       const response = await axios.get(`${API_BASE_URL}/commande-tickets`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           Accept: "application/json",
+  //         },
+  //       });
+
+  //       setTest(response.data);
+  //       console.log("Prix tickets récupérés:", response.data);
+  //     } catch (err) {
+  //       console.error("Erreur lors de la récupération des prix:", err);
+  //     } finally {
+  //       NProgress.done();
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // 🔹 Calcul automatique de la date d’expiration (10 jours après la date d’entrée)
   useEffect(() => {
-    
-
     if (formData.dateEntree) {
       const date = new Date(formData.dateEntree);
       date.setDate(date.getDate() + 10);
@@ -62,16 +63,16 @@ console.log(test)
     }
   }, [formData.dateEntree]);
 
+  // 🔹 Gestion des changements de champs
   const handleChange = (e) => {
     const { name, value } = e.target;
     const numericFields = [
-      "ticketCount",
-      "adultes",
-      "enfants",
-      "etrangers",
-      "nonEtrangers",
+      "number_resident_adulte",
+      "number_non_resident_adulte",
+      "number_resident_enfant",
+      "number_non_resident_enfant",
       "vehiculeCount",
-      "hebergementCount",
+      "number_sejour",
     ];
 
     const safeValue = numericFields.includes(name)
@@ -81,32 +82,71 @@ console.log(test)
     setFormData((prev) => ({ ...prev, [name]: safeValue }));
   };
 
-  const handleSubmit = (e) => {
+  // 🔹 Envoi de la commande
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToCopy = { ...formData };
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Vous devez être connecté pour passer une commande.");
+        return;
+      }
 
-    // ✅ copie des données pour la popup
-    setCopiedData(dataToCopy);
+        // ✅ Affiche les données dans la console
+        console.log("Token :", token);
+        console.log("Données de la commande à envoyer :", formData);
 
-    console.log(copiedData)
+      NProgress.start();
 
-    // ✅ ouvre popup sans envoyer encore
-    setPopupVisible(true);
+      const response = await axios.post(
+        `${API_BASE_URL}/commande-tickets`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      console.log("✅ Commande envoyée :", response.data);
+      alert("Votre commande a été envoyée avec succès !");
+
+      // Réinitialisation du formulaire
+      setFormData({
+        number_resident_adulte: 0,
+        number_non_resident_adulte: 0,
+        number_resident_enfant: 0,
+        number_non_resident_enfant: 0,
+        vehicule: "",
+        vehiculeCount: 0,
+        hebergement: "",
+        number_sejour: 1,
+        dateEntree: "",
+        dateExpiration: "",
+        prixTotal: 0,
+      });
+
+    } catch (err) {
+      console.error("❌ Erreur lors de l’envoi de la commande :", err);
+      alert("Erreur lors de l’envoi de votre commande. Réessayez.");
+    } finally {
+      NProgress.done();
+    }
   };
 
+  // 🔹 Annuler la commande
   const handleCancel = () => {
     setFormData({
-      ticketType: "",
-      ticketCount: 1,
-      adultes: 0,
-      enfants: 0,
-      etrangers: 0,
-      nonEtrangers: 0,
+      number_resident_adulte: 0,
+      number_non_resident_adulte: 0,
+      number_resident_enfant: 0,
+      number_non_resident_enfant: 0,
       vehicule: "",
       vehiculeCount: 0,
       hebergement: "",
-      hebergementCount: 1,
+      number_sejour: 1,
       dateEntree: "",
       dateExpiration: "",
       prixTotal: 0,
@@ -124,50 +164,33 @@ console.log(test)
           Veuillez remplir les informations pour générer votre facture.
         </p>
 
-           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Tickets */}
-          <div>
-            <label className="block mb-1 font-semibold">Type de Ticket</label>
-            <select name="ticketType" value={formData.ticketType} onChange={handleChange}
-              className="border border-gray-300 p-3 rounded w-full">
-              <option value="">-- Choisir --</option>
-              <option value="Personnel">Personnel</option>
-              <option value="Groupe">Groupe</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Nombre de Tickets</label>
-            <input name="ticketCount" type="number" min="0" value={formData.ticketCount} onChange={handleChange}
-              className="border border-gray-300 p-3 rounded w-full" />
-          </div>
-
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Répartition */}
           <div>
             <label className="block mb-1 font-semibold">Nombre résidents adultes</label>
-            <input name="adultes" type="number" min="0" value={formData.adultes} onChange={handleChange}
+            <input name="number_resident_adulte" type="number" min="0" value={formData.number_resident_adulte} onChange={handleChange}
               className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold">Nombre résidents Enfants</label>
-            <input name="enfants" type="number" min="0" value={formData.enfants} onChange={handleChange}
+            <label className="block mb-1 font-semibold">Nombre résidents enfants</label>
+            <input name="number_resident_enfant" type="number" min="0" value={formData.number_resident_enfant} onChange={handleChange}
               className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
           <div>
             <label className="block mb-1 font-semibold">Nombre non-résidents adultes</label>
-            <input name="etrangers" type="number" min="0" value={formData.etrangers} onChange={handleChange}
+            <input name="number_non_resident_adulte" type="number" min="0" value={formData.number_non_resident_adulte} onChange={handleChange}
               className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
           <div>
-            <label className="block mb-1 font-semibold">Nombre non-résidents enfants </label>
-            <input name="nonEtrangers" type="number" min="0" value={formData.nonEtrangers} onChange={handleChange}
+            <label className="block mb-1 font-semibold">Nombre non-résidents enfants</label>
+            <input name="number_non_resident_enfant" type="number" min="0" value={formData.number_non_resident_enfant} onChange={handleChange}
               className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
-          {/* Parkings */}
+          {/* Véhicules */}
           <div>
             <label className="block mb-1 font-semibold">Type de Véhicule</label>
             <select name="vehicule" value={formData.vehicule} onChange={handleChange}
@@ -186,7 +209,7 @@ console.log(test)
               className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
-          {/* Hébergements */}
+          {/* Hébergement */}
           <div>
             <label className="block mb-1 font-semibold">Type d'Hébergement</label>
             <select name="hebergement" value={formData.hebergement} onChange={handleChange}
@@ -195,6 +218,12 @@ console.log(test)
               <option value="Tente">Tente</option>
               <option value="Camping">Camping</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">Nombre de jours de séjour</label>
+            <input name="number_sejour" type="number" min="1" value={formData.number_sejour} onChange={handleChange}
+              className="border border-gray-300 p-3 rounded w-full" />
           </div>
 
           {/* Dates */}
@@ -211,9 +240,7 @@ console.log(test)
           </div>
         </form>
 
-          {/* 👉 tes champs inchangés
-        </form> */}
-
+        {/* Boutons */}
         <div className="mt-10 text-center flex justify-evenly">
           <button
             type="button"
@@ -232,10 +259,10 @@ console.log(test)
         </div>
       </div>
 
-      {/* ✅ Affichage de la popup avec données copiées */}
-      {popupVisible && (
-        <ValiderCommande data={copiedData} onClose={() => setPopupVisible(false)} />
-      )}
+      {/* Popup      {popupVisible && (
+        <EnvoyerCommandes data={copiedData} onClose={() => setPopupVisible(false)} />
+      )} */}
+
     </section>
   );
 }
